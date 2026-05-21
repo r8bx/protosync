@@ -1,0 +1,9 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP SN74LVC3G17DCTR
+D Texas Instruments SN74LVC3G17DCTR, Triple, Schmitt Trigger Buffer, Non-Inverting, 1.65  5.5 V, 8-Pin SSOP
+K
+F http://www.ti.com/lit/gpn/sn74lvc3g17
+$ENDCMP
+#
+#End Doc Library

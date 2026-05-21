@@ -1,0 +1,9 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP SJ1-3513-SMT-TR
+D SJ1-3513-SMT-TR - 3.5 mm, Stereo, Right Angle, Surface Mount (SMT), 3 Conductors, 0 Internal Switches, Audio Jack Connector
+K
+F https://www.sameskydevices.com/product/resource/SJ1-3513-SMT-TR.pdf
+$ENDCMP
+#
+#End Doc Library

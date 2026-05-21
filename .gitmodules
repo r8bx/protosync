@@ -1,0 +1,9 @@
+[submodule "libraries/link"]
+	path = libraries/link
+	url = https://github.com/Ableton/link
+[submodule "libraries/pigpio"]
+	path = libraries/pigpio
+	url = https://github.com/joan2937/pigpio
+[submodule "libraries/spdlog"]
+	path = libraries/spdlog
+	url = https://github.com/gabime/spdlog

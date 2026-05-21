@@ -1,0 +1,223 @@
+(footprint "ACJM-MHOM"
+	(version 20241229)
+	(generator "pcbnew")
+	(generator_version "9.0")
+	(layer "F.Cu")
+	(property "Reference" "J16"
+		(at -10.668 -1.016 0)
+		(layer "F.SilkS")
+		(uuid "b60edb9e-5267-40be-951e-92b750141374")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Value" "ACJS-MHOM"
+		(at -11.176 -2.278 0)
+		(layer "F.Fab")
+		(uuid "ec5d4993-007a-4202-83d8-8418ab930c8f")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Datasheet" ""
+		(at 0 0 0)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "00bb6190-a9f8-4d02-ab40-57ccbf21f15d")
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Description" ""
+		(at 0 0 0)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "8add9633-4aae-4805-9429-2599b33bcd6e")
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.15)
+			)
+		)
+	)
+	(attr through_hole)
+	(fp_line
+		(start -22.1 6.43)
+		(end -0.2 6.43)
+		(stroke
+			(width 0.12)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "3952837a-c027-47fc-9c8c-bd7e61adcdc5")
+	)
+	(fp_line
+		(start -22 -9.32)
+		(end -22 6.43)
+		(stroke
+			(width 0.12)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "47f7374a-10c1-4418-b326-a146d9606461")
+	)
+	(fp_line
+		(start -0.2 -9.32)
+		(end -22 -9.32)
+		(stroke
+			(width 0.12)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "944c28f2-f931-4aa6-a3c7-ced337218ae6")
+	)
+	(fp_line
+		(start -0.2 6.43)
+		(end -0.2 -9.32)
+		(stroke
+			(width 0.12)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "669b0933-94ff-4fb1-9dc1-b40d4b643686")
+	)
+	(fp_line
+		(start 0 0)
+		(end -20.32 0)
+		(stroke
+			(width 0.12)
+			(type solid)
+		)
+		(layer "Dwgs.User")
+		(uuid "9e3e9c19-cff1-432f-b19c-b45481d9aff9")
+	)
+	(fp_line
+		(start -25 -9.5)
+		(end 0 -9.5)
+		(stroke
+			(width 0.12)
+			(type solid)
+		)
+		(layer "B.CrtYd")
+		(uuid "24115e85-2b10-4993-8811-7ab21d315f11")
+	)
+	(fp_line
+		(start -25 6.6)
+		(end -25 -9.5)
+		(stroke
+			(width 0.12)
+			(type solid)
+		)
+		(layer "B.CrtYd")
+		(uuid "cfb06d17-b9c4-4566-b6bb-1e2751a6f642")
+	)
+	(fp_line
+		(start -22.2 6.6)
+		(end -25 6.6)
+		(stroke
+			(width 0.12)
+			(type solid)
+		)
+		(layer "B.CrtYd")
+		(uuid "a7de0615-48b2-4266-af3a-7af398ac1b8c")
+	)
+	(fp_line
+		(start -22.2 6.6)
+		(end -22.1 6.6)
+		(stroke
+			(width 0.12)
+			(type solid)
+		)
+		(layer "B.CrtYd")
+		(uuid "a41c01f5-572b-4e78-915c-3c92d505fc3e")
+	)
+	(fp_line
+		(start 0 -9.5)
+		(end 0 6.6)
+		(stroke
+			(width 0.12)
+			(type solid)
+		)
+		(layer "B.CrtYd")
+		(uuid "5b3e6003-e7f7-4b14-906d-d7f34928a934")
+	)
+	(fp_line
+		(start 0 6.6)
+		(end -22.2 6.6)
+		(stroke
+			(width 0.12)
+			(type solid)
+		)
+		(layer "B.CrtYd")
+		(uuid "381d5984-ccbd-4801-ae4b-8b780a329d33")
+	)
+	(pad "R" thru_hole circle
+		(at -11.1 -7.23 180)
+		(size 2.55 2.55)
+		(drill 1.55)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "bbb249c0-a266-479f-ae28-5754e6f8accb")
+	)
+	(pad "RN" thru_hole circle
+		(at -11.1 4.2 180)
+		(size 2.55 2.55)
+		(drill 1.55)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "d3fde2ef-c922-4413-bd55-4fcf68f0e16f")
+	)
+	(pad "S" thru_hole circle
+		(at -4.75 -7.23 180)
+		(size 2.55 2.55)
+		(drill 1.55)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "8d6cd5ba-c028-4de9-b263-cdaad0dd8b3e")
+	)
+	(pad "SN" thru_hole circle
+		(at -4.75 4.2 180)
+		(size 2.55 2.55)
+		(drill 1.55)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "ebff9bcc-7442-49a4-bcf3-31d585b068b3")
+	)
+	(pad "T" thru_hole circle
+		(at -17.45 -7.23 180)
+		(size 2.55 2.55)
+		(drill 1.55)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "86d9f36d-e645-480c-a31d-e11000467f65")
+	)
+	(pad "TN" thru_hole circle
+		(at -17.45 4.2 180)
+		(size 2.55 2.55)
+		(drill 1.55)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "a1aec05e-c933-404b-a85b-4f0c9ea4aec0")
+	)
+	(embedded_fonts no)
+	(model "${KIPRJMOD}/parts/ACJS-MHOM.stp"
+		(offset
+			(xyz -0.5 0 6.5)
+		)
+		(scale
+			(xyz 1 1 1)
+		)
+		(rotate
+			(xyz -90 0 -90)
+		)
+	)
+)

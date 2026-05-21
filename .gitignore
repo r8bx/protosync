@@ -1,0 +1,43 @@
+# ── Build ─────────────────────────────────────────────────────────────────────
+build/
+cmake-build-*/
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+*.cmake
+!libraries/link/AbletonLinkConfig.cmake
+
+# ── Binaries ──────────────────────────────────────────────────────────────────
+*.o
+*.a
+*.so
+*.out
+protosync
+
+# ── Logs ──────────────────────────────────────────────────────────────────────
+*.log
+*.csv
+
+# ── IDE / editor ──────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ── OS ────────────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── Submodules (track folders, not contents) ──────────────────────────────────
+# libraries/link and libraries/spdlog are submodules — their contents
+# are managed by git submodule, not tracked directly
+libraries/link/*
+libraries/spdlog/*
+!libraries/link/.git
+!libraries/spdlog/.git
+
+# ── Waveshare SDK (external, not a submodule) ─────────────────────────────────
+# Uncomment if you do NOT want to track the waveshare sources:
+# libraries/waveshare/
