@@ -1,29 +1,3 @@
-/**
- * main.cpp
- * Waveshare 2-inch LCD + Ableton Link + ADS1015 ADC + GPIO clock + MIDI I/O
- *
- * Clock / sync outputs (gated by Link transport):
- *   GPIO12 — beat clock (PPQN pulses per quarter note)
- *   GPIO13 — bar pulse  (every PPQN × 4 beats)
- *   GPIO19 — run/stop   (HIGH = playing)
- *
- * MIDI (31250 baud 8N1, /dev/ttyAMA0), gated by Link transport:
- *   GPIO14 TX — OUT: FA on transport-on, FC on transport-off, F8 @ 24 PPQN
- *   GPIO15 RX — IN:  all channel messages (Note, CC, Prog, Bend ...)
- *
- * Buttons (active low, internal pull-up, 10 ms glitch filter):
- *   GPIO5  — ENTER:    open selected page / return to MENU
- *   GPIO23 — RUN:      toggle Link transport on/off (Start/Stop framework-wide)
- *
- * Changes vs original:
- *   [1] clock_thread_fn        — Link-anchored via timeAtBeat(), adaptive pulse width
- *   [2] gpio_measure_thread_fn — sync_error_us computed (was hardcoded 0)
- *   [3] main render loop       — auto-shutdown after 10 000 frames
- *
- * Build:  mkdir -p build && cd build && cmake .. && make -j4
- * Run:    sudo ./build/bin/test_app
- */
-
 #include "ui.hpp"
 #include "logger.hpp"
 #include "ads1050.h"
@@ -43,6 +17,7 @@
 #include <unistd.h>
 #include <termios.h>
 #include <pthread.h>
+#include <sys/mman.h>   // mlockall
 
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
@@ -62,6 +37,7 @@
 
 static constexpr uint32_t MIDI_PPQN   = 24;
 static constexpr double   LINK_QUANTUM = 4.0;
+static constexpr int      RT_CPU       = 3;   // isolated core (isolcpus=3 rcu_nocbs=3)
 
 /* ── App state ───────────────────────────────────────────────────────────── */
 static volatile sig_atomic_t g_running  = 1;
@@ -85,6 +61,26 @@ struct LinkState {
 static LinkState g_link_state;
 
 static void on_signal(int) { g_running = 0; }
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * set_rt_affinity — helper: SCHED_FIFO + pin to RT_CPU
+ * ───────────────────────────────────────────────────────────────────────── */
+static void set_rt_affinity(int priority, const char *name)
+{
+    sched_param sp{};
+    sp.sched_priority = priority;
+    if (pthread_setschedparam(pthread_self(), SCHED_FIFO, &sp) != 0)
+        spdlog::warn("{}: SCHED_FIFO prio {} failed (run as root?)", name, priority);
+
+    cpu_set_t cpuset;
+    CPU_ZERO(&cpuset);
+    CPU_SET(RT_CPU, &cpuset);
+    if (pthread_setaffinity_np(pthread_self(), sizeof(cpuset), &cpuset) != 0)
+        spdlog::warn("{}: setaffinity CPU{} failed -- add isolcpus={} rcu_nocbs={} "
+                     "to /boot/firmware/cmdline.txt", name, RT_CPU, RT_CPU, RT_CPU);
+    else
+        spdlog::info("{}: SCHED_FIFO prio {} pinned to CPU{}", name, priority, RT_CPU);
+}
 
 /* ─────────────────────────────────────────────────────────────────────────
  * btn_enter_cb — GPIO5 ENTER button
@@ -297,10 +293,7 @@ static void link_thread_fn()
  * ───────────────────────────────────────────────────────────────────────── */
 static void clock_thread_fn()
 {
-    sched_param sp{};
-    sp.sched_priority = 70;
-    if (pthread_setschedparam(pthread_self(), SCHED_FIFO, &sp) != 0)
-        spdlog::warn("Clock thread: SCHED_FIFO failed (run as root?)");
+    set_rt_affinity(70, "Clock thread");  // [CHANGE 5]
 
     spdlog::info("Clock thread started -- {}PPQN GPIO{}, bar GPIO{}, run GPIO{}",
                  PPQN, GPIO_BEAT_CLK, GPIO_BAR_CLK, GPIO_RUN);
@@ -378,10 +371,8 @@ static void clock_thread_fn()
  * ───────────────────────────────────────────────────────────────────────── */
 static void midi_tx_thread_fn()
 {
-    sched_param sp{};
-    sp.sched_priority = 65;
-    if (pthread_setschedparam(pthread_self(), SCHED_FIFO, &sp) != 0)
-        spdlog::warn("MIDI TX thread: SCHED_FIFO failed");
+    set_rt_affinity(65, "MIDI TX thread");  // [CHANGE 5]
+
     spdlog::info("MIDI TX thread started -- Link-anchored MIDI clock "
                  "(F8 @ 24 PPQN, FA/FC on transport edges)");
 
@@ -469,10 +460,8 @@ static void midi_rx_thread_fn()
  * ───────────────────────────────────────────────────────────────────────── */
 static void measure_thread_fn()
 {
-    sched_param sp{};
-    sp.sched_priority = 60;
-    if (pthread_setschedparam(pthread_self(), SCHED_FIFO, &sp) != 0)
-        spdlog::warn("Measure thread: SCHED_FIFO failed (run as root?)");
+    set_rt_affinity(60, "Measure thread");  // [CHANGE 5]
+
     spdlog::info("Measure thread started");
 
     constexpr int WINDOW = MeasureState::SPARK_N;
@@ -590,10 +579,8 @@ static void measure_thread_fn()
  * ───────────────────────────────────────────────────────────────────────── */
 static void gpio_measure_thread_fn()
 {
-    sched_param sp{};
-    sp.sched_priority = 58;
-    if (pthread_setschedparam(pthread_self(), SCHED_FIFO, &sp) != 0)
-        spdlog::warn("GPIO measure thread: SCHED_FIFO failed");
+    set_rt_affinity(58, "GPIO measure thread");  // [CHANGE 5]
+
     spdlog::info("GPIO measure thread started -- {} PPQN GPIO{}", PPQN, GPIO_BEAT_CLK);
 
     constexpr int WINDOW = MeasureState::SPARK_N;
@@ -727,6 +714,13 @@ int main()
 {
     init_logger();
     spdlog::info("Starting...");
+
+    // Blokada stron pamięci -- eliminuje page faults w wątkach RT  [CHANGE 4]
+    if (mlockall(MCL_CURRENT | MCL_FUTURE) != 0)
+        spdlog::warn("mlockall failed (run as root?) -- page faults possible in RT threads");
+    else
+        spdlog::info("mlockall OK -- all pages locked in RAM");
+
     if (!g_logger.open("."))
         spdlog::warn("Logger: failed to open CSV -- data will not be saved");
 
